@@ -46,10 +46,8 @@ func (self *Info) buildBacktrace() {
 		if !record {
 			if f.Name() == "runtime.gopanic" {
 				record = true
-				continue
-			} else {
-				continue
 			}
+			continue
 		}
 
 		file, line := f.FileLine(pc)

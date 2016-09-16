@@ -6,11 +6,22 @@ import (
 	"testing"
 )
 
+func TestRootPanic(t *testing.T) {
+	ph := NewHandler(func(info *Info) {
+		fmt.Println(info.Error)
+		info.Print()
+	})
+	defer ph.Sync()
+
+	panic("Error")
+}
+
 func TestSinglePanic(t *testing.T) {
 	quit := make(chan bool)
 
-	ph := NewHandler(func(info Info) {
+	ph := NewHandler(func(info *Info) {
 		fmt.Println(info.Error)
+		info.Print()
 		close(quit)
 	})
 
@@ -23,8 +34,9 @@ func TestSinglePanic(t *testing.T) {
 }
 
 func TestMultiplePanics(t *testing.T) {
-	ph := NewHandler(func(info Info) {
+	ph := NewHandler(func(info *Info) {
 		fmt.Println(info.Error)
+		info.Print()
 	})
 
 	var wg sync.WaitGroup
@@ -43,8 +55,9 @@ func TestMultiplePanics(t *testing.T) {
 }
 
 func TestNestedPanics(t *testing.T) {
-	ph := NewHandler(func(info Info) {
+	ph := NewHandler(func(info *Info) {
 		fmt.Println(info.Error)
+		info.Print()
 	})
 
 	var wg sync.WaitGroup

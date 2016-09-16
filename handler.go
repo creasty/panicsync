@@ -1,14 +1,13 @@
 package panicsync
 
 import (
-	"runtime"
 	"sync"
 )
 
-type HandlerFunc func(Info)
+type HandlerFunc func(*Info)
 
 type Handler struct {
-	info    chan Info
+	info    chan *Info
 	quit    chan bool
 	handler HandlerFunc
 	lock    *sync.Mutex
@@ -16,7 +15,7 @@ type Handler struct {
 
 func NewHandler(fn HandlerFunc) *Handler {
 	h := &Handler{
-		info:    make(chan Info),
+		info:    make(chan *Info),
 		handler: fn,
 		lock:    &sync.Mutex{},
 		quit:    make(chan bool),
@@ -31,7 +30,7 @@ func (self *Handler) listen() {
 	}
 }
 
-func (self *Handler) handle(info Info) {
+func (self *Handler) handle(info *Info) {
 	self.lock.Lock()
 	defer self.lock.Unlock()
 	self.handler(info)
@@ -58,16 +57,8 @@ func (self *Handler) Sync() {
 		return
 	}
 
-	buf := make([]byte, 10000)
-	traceSize := runtime.Stack(buf, false)
-	buf = buf[:traceSize]
-	info := Info{
-		Error:      err,
-		StackTrace: string(buf),
-	}
-
 	select {
-	case self.info <- info:
+	case self.info <- NewInfo(err):
 	case <-self.quit:
 	}
 }

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"sync"
 	"testing"
-	// "time"
 )
 
 func TestSinglePanic(t *testing.T) {

@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	ph := panicsync.NewHandler(func(info panicsync.Info) {
+	ph := panicsync.NewHandler(func(info *panicsync.Info) {
 		info.Print()  // Handle error: just print and ignore
 	})
 
@@ -34,16 +34,8 @@ func main() {
 
 ```
 panic: Error [panicsync]
-goroutine 18 [running]:
-github.com/creasty/panicsync.(*Handler).Sync(0xc82006c000)
-        /Users/ykiwng/go/src/github.com/creasty/panicsync/handler.go:62 +0xad
-panic(0xbc480, 0xc8200a4020)
-        /Users/ykiwng/.anyenv/envs/goenv/versions/1.6/src/runtime/panic.go:426 +0x4e9
-main.main.func2(0xc82006c000)
-        /Users/ykiwng/go/src/github.com/creasty/panicsync/tmp/main.go:19 +0x90
-created by main.main
-        /Users/ykiwng/go/src/github.com/creasty/panicsync/tmp/main.go:20 +0x56
-
+        main.main.func2 [/Users/ykiwng/go/src/github.com/creasty/panicsync/tmp/main.go:17]
+        runtime.goexit [/Users/ykiwng/.anyenv/envs/goenv/versions/1.6/src/runtime/asm_amd64.s:1999]
 DONE
 ```
 
@@ -63,7 +55,7 @@ import (
 )
 
 func main() {
-	ph := panicsync.NewHandler(func(info panicsync.Info) {
+	ph := panicsync.NewHandler(func(info *panicsync.Info) {
 		fmt.Println(info.Error)
 	})
 
